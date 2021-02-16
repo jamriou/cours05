@@ -50,10 +50,10 @@ workflows:
       - deploy_staging:
           requires:
             - integration_tests_backend
-      - acceptance_tests_1:
-      - acceptance_tests_2:
-      - acceptance_tests_3:
-      - acceptance_tests_4:
+      - acceptance_tests_1
+      - acceptance_tests_2
+      - acceptance_tests_3
+      - acceptance_tests_4
       - deploy_production:
           requires:
             - acceptance_tests_1
