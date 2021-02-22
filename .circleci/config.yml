@@ -1,70 +1,64 @@
 version: 2.1
 
 jobs:
-  checkout_and_unit_test:
+  waitForStagingToBeUp:
     machine: true
     steps:
-      - run: echo "checkout_and_unit_test"
-  deploy_backend:
+      - run: echo "Waiting until response from staging..."
+  deployProd:
     machine: true
     steps:
-      - run: echo "deploy_backend"
-  integration_tests_backend:
+      - run: echo "deploy production build"
+  notifyTeamOfNewBuild:
     machine: true
     steps:
-      - run: echo "integration_tests_backend"
-  deploy_staging:
+      - run: echo "Notifying team of new build pipeline..."
+  acceptances1:
     machine: true
     steps:
-      - run: echo "deploy_staging"
-  acceptance_tests_1:
+      - run: echo "acceptances1"
+  checkoutAndTest:
     machine: true
     steps:
-      - run: echo "acceptance_tests_1"
-  acceptance_tests_2:
+      - run: echo "Checkout and test"
+  acceptances2:
     machine: true
     steps:
       - run: echo "acceptance_tests_2"
-  acceptance_tests_3:
+  deployStaging:
     machine: true
     steps:
-      - run: echo "acceptance_tests_3"
-  acceptance_tests_4:
+      - run: echo "desploy staging"
+  notfyNewVersion:
     machine: true
     steps:
-      - run: echo "acceptance_tests_4"
-  deploy_production:
-    machine: true
-    steps:
-      - run: echo "deploy_production"
+      - run: echo "Notify new version."
 workflows:
   build:
     jobs:
-      - checkout_and_unit_test
-      - deploy_backend:
+      - checkoutAndTest
+      - deployStaging
+      - waitForStagingToBeUp:
           requires:
-            - checkout_and_unit_test
-      - integration_tests_backend:
+            - deployStaging
+      - acceptances1:
           requires:
-            - deploy_backend
+            - waitForStagingToBeUp
+      - acceptances2:
+          requires:
+            - waitForStagingToBeUp
       - deploy_staging:
           requires:
             - integration_tests_backend
-      - acceptance_tests_1:
+      - deploy_staging:
           requires:
-            - deploy_staging
-      - acceptance_tests_2:
+            - acceptances1
+            - acceptances2
+      - deployProd:
           requires:
-            - deploy_staging
-      - acceptance_tests_3:
+            - acceptances1
+            - acceptances2
+      - notifyTeamOfNewBuild
+      - notfyNewVersion:
           requires:
-            - deploy_staging
-      - acceptance_tests_4:
-          requires:
-            - deploy_staging
-      - deploy_production:
-          requires:
-            - acceptance_tests_1
-            - acceptance_tests_2
-            - acceptance_tests_3
-            - acceptance_tests_4
+            - deployProd
