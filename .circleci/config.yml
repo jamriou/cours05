@@ -47,13 +47,6 @@ workflows:
       - acceptances2:
           requires:
             - waitForStagingToBeUp
-      - deploy_staging:
-          requires:
-            - integration_tests_backend
-      - deploy_staging:
-          requires:
-            - acceptances1
-            - acceptances2
       - deployProd:
           requires:
             - acceptances1
