@@ -37,7 +37,9 @@ workflows:
   build:
     jobs:
       - checkoutAndTest
-      - deployStaging
+      - deployStaging:
+          requires:
+            - checkoutAndTest
       - waitForStagingToBeUp:
           requires:
             - deployStaging
